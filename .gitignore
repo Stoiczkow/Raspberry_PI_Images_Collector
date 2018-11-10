@@ -12,6 +12,7 @@ media
 .static
 .static/
 img_api/static
+static/
 
 ### Eclipse ###
 

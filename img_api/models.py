@@ -4,9 +4,12 @@ import os
 
 
 class ScreenShots(models.Model):
-    img = models.FileField(blank=True, upload_to='img_api/static/')
+    img = models.ImageField(blank=True, upload_to='img_api/static')
     created = models.DateTimeField(default=None, null=True)
     coordinates = models.TextField(max_length=1024, default=None, null=True)
 
     def filename(self):
         return os.path.basename(self.img.name)
+
+    def get_img_url(self):
+        return self.img.url[8:]
