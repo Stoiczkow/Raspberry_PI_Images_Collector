@@ -2,6 +2,7 @@ from django.db import models
 import os
 # Create your models here.
 
+
 class ScreenShots(models.Model):
     img = models.FileField(blank=True, upload_to='img_api/static/')
     created = models.DateTimeField(default=None, null=True)
