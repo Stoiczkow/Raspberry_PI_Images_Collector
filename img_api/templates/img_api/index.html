@@ -44,13 +44,17 @@
             <ul class="list-group list-group-flush">
             {% for screen in screen_shots %}
                 <li class="list-group-item">
+
                     <img src="{{ screen.get_img_url }}" class="rounded" alt="{{ screen.filename }}" width="304" height="236">
                 <b>{{ screen.filename }}</b>
+
                 </li>
             {% endfor %}
             </ul>
 </div>
     </div>
+
+    <p><img src="img_api/test.jpg"></p>
 {% endblock %}
 
 </body>
