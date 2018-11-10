@@ -10,6 +10,8 @@ local_settings.py
 db.sqlite3
 media
 .static
+.static/
+img_api/static
 
 ### Eclipse ###
 
