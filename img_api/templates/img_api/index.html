@@ -41,12 +41,12 @@
 {% block content %}
     <div class="container text-center">
         <h1>Screen shots preview</h1>
+        <h4><a href="/generate_tracks"><button>Generate tracks</button></a></h4>
             <ul class="list-group list-group-flush">
             {% for screen in screen_shots %}
                 <li class="list-group-item">
+                    <img src="{% static screen.filename %}" class="rounded" alt="{{ screen.filename }}" width="304" height="236"> <b>Time:</b> {{ screen.created }}&#10; <b>Latitude:</b> {{ screen.latitude }}&#10; <b>Longitude:</b> {{ screen.longitude }}
 
-                    <img src="{{ screen.get_img_url }}" class="rounded" alt="{{ screen.filename }}" width="304" height="236">
-                <b>{{ screen.filename }}</b>
 
                 </li>
             {% endfor %}
@@ -54,7 +54,6 @@
 </div>
     </div>
 
-    <p><img src="img_api/test.jpg"></p>
 {% endblock %}
 
 </body>

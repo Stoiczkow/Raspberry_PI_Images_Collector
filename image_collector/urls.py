@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url
-from img_api.views import ImagesApiView, ListImages
+from img_api.views import ImagesApiView, ListImages, CreateTracks
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^index/$', ListImages.as_view(), name='index'),
     url(r'^api/img$', ImagesApiView.as_view()),
+    url(r'^generate_tracks$', CreateTracks.as_view()),
 ]

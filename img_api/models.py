@@ -4,12 +4,15 @@ import os
 
 
 class ScreenShots(models.Model):
-    img = models.ImageField(blank=True, upload_to='img_api/static')
-    created = models.DateTimeField(default=None, null=True)
-    coordinates = models.TextField(max_length=1024, default=None, null=True)
+    img = models.ImageField(blank=True, upload_to='django_project/static')
+    created = models.TextField(max_length=256,default=None, null=True)
+    latitude = models.TextField(max_length=256, default=None, null=True)
+    longitude = models.TextField(max_length=256, default=None, null=True)
 
+
+    @property
     def filename(self):
         return os.path.basename(self.img.name)
 
     def get_img_url(self):
-        return self.img.url[8:]
+        return self.filename
