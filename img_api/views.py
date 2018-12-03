@@ -1,4 +1,4 @@
-from django.shortcuts import render
+﻿from django.shortcuts import render
 from rest_framework.views import APIView
 from django.views import View
 from rest_framework.response import Response
@@ -6,8 +6,10 @@ from rest_framework import status
 from .models import ScreenShots
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http import HttpResponseRedirect
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.urls import reverse
+import os
+
 
 # Create your views here.
 
@@ -16,7 +18,7 @@ class ImagesApiView(APIView):
 
         try:
             img = ScreenShots.objects.create(img=request.FILES['screen_shot'])
-            file_name = img.filename
+            file_name = request.POST['file_name']
             A_index = file_name.index('A')
             B_index = file_name.index('B')
             C_index = file_name.index('C')
@@ -24,11 +26,12 @@ class ImagesApiView(APIView):
             latitude = file_name[A_index + 1:B_index]
             longitude = file_name[B_index + 1:C_index]
 
+            img.img_name = file_name
             img.created = time
             img.latitude = latitude
             img.longitude = longitude
             img.save()
-            # time = datetime.strptime(time, '%Y-%b-%dT%I%M%SZ')
+            # time = datetime.strptime(time, '%Y-%m-%d %I:%M:%S.%f')
             # print(str(datetime.now()))
             print(time)
             print(latitude)
@@ -37,6 +40,7 @@ class ImagesApiView(APIView):
         except MultiValueDictKeyError:
             return Response("There's no file attached!",
                             status=status.HTTP_406_NOT_ACCEPTABLE)
+
 
 class ListImages(View):
     def get(self, request):
@@ -52,25 +56,42 @@ class CreateTracks(View):
         screen_shots = ScreenShots.objects.all()
         try:
             current = datetime.strptime(screen_shots[0].created,
-                                        '%Y-%m-%d %I:%M:%S.%f')
+                                        '%Y-%m-%d %H:%M:%S.%f')
         except IndexError:
             pass
         working_track = ''
-
+        #print(screen_shots)
         for screen in screen_shots:
             screen_d = datetime.strptime(str(screen.created),
-                                         '%Y-%m-%d %I:%M:%S.%f')
-            if (screen_d - current) < 2:
+                                         '%Y-%m-%d %H:%M:%S.%f')
+            if (screen_d - current) < timedelta(seconds=5):
                 working_track += screen.latitude
+                working_track += ',-'
                 working_track += screen.longitude
+                working_track += ',"{}",'.format(screen.created)
+                working_track += '"http://207.154.253.47/static/{}","http://207.154.253.47/static/{}",'.format(
+                    screen.img_name.replace(' ', '_').replace(':', ''),
+                    screen.img_name.replace(' ', '_').replace(':', ''))
                 working_track += '\n'
                 current = screen_d
             else:
                 tracks.append(working_track)
                 working_track = ''
-
-        for i in range(0, len(tracks)):
-            with open('{}.txt'.format(i), "+w") as f:
-                f.write(tracks[i])
+                working_track += screen.latitude
+                working_track += ',-'
+                working_track += screen.longitude
+                working_track += ',"{}",'.format(screen.created)
+                working_track += '"http://207.154.253.47/static/{}","http://207.154.253.47/static/{}",'.format(
+                    screen.img_name.replace(' ', '_').replace(':', ''),
+                    screen.img_name.replace(' ', '_').replace(':', ''))
+                working_track += '\n'
+                current = screen_d
+            tracks.append(working_track)
+        print(tracks)
+        for j in range(0, len(tracks)):
+            print('po')
+            with open('{}.txt'.format(j), "w") as f:
+                f.write('hello')
+                f.write(tracks[j])
         ctx = {'done': 'Tracks files were generated'}
         return HttpResponseRedirect(reverse('index'))
