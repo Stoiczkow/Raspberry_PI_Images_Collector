@@ -8,12 +8,15 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.http import HttpResponseRedirect
 from datetime import datetime, timedelta
 from django.urls import reverse
-import os
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
 
 class ImagesApiView(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     def post(self, request, format=None):
 
         try:
