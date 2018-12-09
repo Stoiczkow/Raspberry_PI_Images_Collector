@@ -44,7 +44,7 @@ class ImagesApiView(APIView):
 
 class ListImages(View):
     def get(self, request):
-        screen_shots = ScreenShots.objects.all()
+        screen_shots = ScreenShots.objects.all().order_by('created')
         ctx = {'screen_shots': screen_shots}
         return render(request, 'img_api/index.html', ctx)
 
@@ -53,14 +53,14 @@ class CreateTracks(View):
     def get(self, request):
         tracks = []
 
-        screen_shots = ScreenShots.objects.all()
+        screen_shots = ScreenShots.objects.all().order_by('created')
         try:
             current = datetime.strptime(screen_shots[0].created,
                                         '%Y-%m-%d %H:%M:%S.%f')
         except IndexError:
             pass
         working_track = ''
-        #print(screen_shots)
+
         for screen in screen_shots:
             screen_d = datetime.strptime(str(screen.created),
                                          '%Y-%m-%d %H:%M:%S.%f')
@@ -86,12 +86,9 @@ class CreateTracks(View):
                     screen.img_name.replace(' ', '_').replace(':', ''))
                 working_track += '\n'
                 current = screen_d
-            tracks.append(working_track)
-        print(tracks)
+        tracks.append(working_track)
         for j in range(0, len(tracks)):
-            print('po')
             with open('{}.txt'.format(j), "w") as f:
-                f.write('hello')
                 f.write(tracks[j])
         ctx = {'done': 'Tracks files were generated'}
         return HttpResponseRedirect(reverse('index'))
