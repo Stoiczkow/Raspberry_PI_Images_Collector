@@ -17,3 +17,8 @@ class ScreenShots(models.Model):
 
     def get_img_url(self):
         return self.filename
+
+
+class Files(models.Model):
+    file = models.FileField(blank=True, upload_to='django_project/static')
+    file_name = models.TextField(max_length=256,default=None, null=True)

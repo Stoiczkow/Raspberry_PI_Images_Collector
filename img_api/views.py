@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from django.views import View
 from rest_framework.response import Response
 from rest_framework import status
-from .models import ScreenShots
+from .models import ScreenShots, Files
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http import HttpResponseRedirect
 from datetime import datetime, timedelta
@@ -95,3 +95,22 @@ class CreateTracks(View):
                 f.write(tracks[j])
         ctx = {'done': 'Tracks files were generated'}
         return HttpResponseRedirect(reverse('index'))
+
+
+class FilesApiView(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, format=None):
+        try:
+            file = Files.objects.create(file=request.FILES['file'])
+            file_name = request.POST['file_name']
+
+            file.file_name = file_name
+            file.save()
+
+            return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+        except MultiValueDictKeyError:
+            return Response("There's no file attached!",
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+
